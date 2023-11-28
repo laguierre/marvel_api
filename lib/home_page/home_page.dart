@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:untitled/marvel/marvel_character_model.dart';
 import 'package:untitled/marvel/marvel_services.dart';
 
@@ -125,38 +127,35 @@ class _HomePageState extends State<HomePage> {
           Positioned(
             left: generalHorizontalPadding,
             right: generalHorizontalPadding,
-            top: -30,
-            height: size.width * 0.35,
-            child: Container(
-              color: Colors.blue,
-              child: Row(
-                children: [
-                  Container(
-                    width: size.width,
-                    padding: EdgeInsets.fromLTRB(0, 30, size.width * 0.2, 0),
-                    child: TextField(
-                      style: const TextStyle(
-                          fontSize: generalFontSize, color: Colors.black),
-                      decoration: InputDecoration(
-                        hintText: 'Buscar Superhéroe o Villano',
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 20.0, vertical: 16),
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide.none,
-                        ),
+            top: 50,
+            height: size.width * 0.15,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                SizedBox(
+                  width: size.width * 0.8,
+                  child: TextField(
+                    style: const TextStyle(
+                        fontSize: generalFontSize, color: Colors.black),
+                    decoration: InputDecoration(
+                      hintText: 'Buscar Superhéroe o Villano',
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 16),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        borderSide: BorderSide.none,
                       ),
                     ),
                   ),
-                  Image.asset(
-                    searchIcon,
-                    height: 20,
-                    width: 20,
-                  ),
-                ],
-              ),
+                ),
+                Image.asset(
+                  searchIcon,
+                  height: size.width * 0.13,
+                  fit: BoxFit.cover,
+                ),
+              ],
             ),
           ),
           Container(
@@ -191,7 +190,11 @@ class _HomePageState extends State<HomePage> {
                       );
                     },
                     itemCount: characters.data?.count ?? 0)
-                : const Center(child: CircularProgressIndicator()),
+                : Center(
+                    child: Image.asset(
+                      'lib/assets/images/icons/loading.gif',
+                    ),
+                  ),
           ),
         ],
       ),
@@ -212,7 +215,7 @@ class MarvelCharacterCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
       child: Row(
         children: [
           ClipOval(
@@ -250,7 +253,7 @@ class MarvelCharacterCard extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 15),
           Expanded(
             child: Text(
               characterName,
