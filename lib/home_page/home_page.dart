@@ -17,6 +17,8 @@ class _HomePageState extends State<HomePage> {
   int offset = 0;
   bool isLoading = false;
   String totalCharacters = '0';
+  final FocusNode _focusNode = FocusNode();
+  String? nameCharacter;
 
   @override
   void initState() {
@@ -38,6 +40,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    TextEditingController textEditingController = TextEditingController();
+
     return Scaffold(
       backgroundColor: marvelRedColor,
       bottomNavigationBar: Container(
@@ -54,30 +58,15 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.white,
               ),
               onTap: () async {
-                try {
-                  setState(() {
-                    isLoading = true;
-                  });
-                  offset -= 20;
-                  Map<String, dynamic> res;
-                  if (offset < 0) {
-                    offset = 0;
-                    res = await marvelApiService.getCharacters(null);
-                  } else {
-                    res =
-                        await marvelApiService.getCharacters(offset.toString());
+                offset -= 20;
+                if (offset < 0) {
+                  offset = 0;
+                } else {
+                  String param = '&offset=$offset';
+                  if (nameCharacter != null) {
+                    param += '&nameStartsWith=$nameCharacter';
                   }
-                  if (res != null) {
-                    characters = MarvelCharacter.fromJson(res);
-                  } else {
-                    debugPrint('La respuesta es nula');
-                  }
-                  setState(() {
-                    isLoading = false;
-                  });
-                } catch (e) {
-                  debugPrint('Error al cargar los personajes: $e');
-                  throw Exception('Failed to load characters');
+                  await getCharactersWithParam(param);
                 }
               },
             ),
@@ -96,24 +85,14 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.white,
               ),
               onTap: () async {
-                try {
-                  setState(() {
-                    isLoading = true;
-                  });
+                if (offset + 20 < int.parse(totalCharacters)) {
                   offset += 20;
-                  var res =
-                      await marvelApiService.getCharacters(offset.toString());
-                  if (res != null) {
-                    characters = MarvelCharacter.fromJson(res);
-                  } else {
-                    debugPrint('La respuesta es nula');
+
+                  String param = '&offset=$offset';
+                  if (nameCharacter != null) {
+                    param += '&nameStartsWith=$nameCharacter';
                   }
-                  setState(() {
-                    isLoading = false;
-                  });
-                } catch (e) {
-                  debugPrint('Error al cargar los personajes: $e');
-                  throw Exception('Failed to load characters');
+                  await getCharactersWithParam(param);
                 }
               },
             )
@@ -125,38 +104,46 @@ class _HomePageState extends State<HomePage> {
           Positioned(
             left: generalHorizontalPadding,
             right: generalHorizontalPadding,
-            top: -30,
-            height: size.width * 0.35,
-            child: Container(
-              color: Colors.blue,
-              child: Row(
-                children: [
-                  Container(
-                    width: size.width,
-                    padding: EdgeInsets.fromLTRB(0, 30, size.width * 0.2, 0),
-                    child: TextField(
-                      style: const TextStyle(
-                          fontSize: generalFontSize, color: Colors.black),
-                      decoration: InputDecoration(
-                        hintText: 'Buscar Superhéroe o Villano',
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 20.0, vertical: 16),
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide.none,
-                        ),
+            top: 50,
+            height: size.width * 0.15,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                SizedBox(
+                  width: size.width * 0.8,
+                  child: TextField(
+                    focusNode: _focusNode,
+                    controller: textEditingController,
+                    style: const TextStyle(
+                        fontSize: generalFontSize, color: Colors.black),
+                    decoration: InputDecoration(
+                      hintText: 'Buscar Superhéroe o Villano',
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 16),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        borderSide: BorderSide.none,
                       ),
                     ),
+                    onSubmitted: (name) async {
+                      await searchByName(textEditingController);
+
+                    },
                   ),
-                  Image.asset(
+                ),
+                GestureDetector(
+                  child: Image.asset(
                     searchIcon,
-                    height: 20,
-                    width: 20,
+                    height: size.width * 0.13,
+                    fit: BoxFit.cover,
                   ),
-                ],
-              ),
+                  onTap: () async {
+                    await searchByName(textEditingController);
+                  },
+                ),
+              ],
             ),
           ),
           Container(
@@ -191,11 +178,46 @@ class _HomePageState extends State<HomePage> {
                       );
                     },
                     itemCount: characters.data?.count ?? 0)
-                : const Center(child: CircularProgressIndicator()),
+                : Center(
+                    child: Image.asset(
+                      'lib/assets/images/icons/loading.gif',
+                    ),
+                  ),
           ),
         ],
       ),
     );
+  }
+
+  Future<void> searchByName(TextEditingController textEditingController) async {
+    _focusNode.unfocus();
+    nameCharacter = textEditingController.text;
+    await getCharactersWithParam(
+        '&nameStartsWith=${textEditingController.text}');
+    setState(() {
+      totalCharacters = characters.data!.total.toString();
+      offset = 0;
+    });
+  }
+
+  Future<void> getCharactersWithParam(String param) async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+
+      var res = await marvelApiService.getCharacters(param);
+      if (res != null) {
+        characters = MarvelCharacter.fromJson(res);
+      } else {
+        debugPrint('La respuesta es nula');
+      }
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      throw Exception('Error al cargar los personajes: $e');
+    }
   }
 }
 
@@ -212,7 +234,7 @@ class MarvelCharacterCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
       child: Row(
         children: [
           ClipOval(
@@ -250,7 +272,7 @@ class MarvelCharacterCard extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 15),
           Expanded(
             child: Text(
               characterName,

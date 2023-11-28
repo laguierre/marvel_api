@@ -32,16 +32,45 @@ class MarvelApiService {
   //     throw Exception('Failed to load characters');
   //   }
   // }
-  Future<Map<String, dynamic>> getCharacters([String? offset]) async {
+  Future<Map<String, dynamic>> getCharacters(String? param) async {
     final HttpClient httpClient = HttpClient();
 
     try {
       final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
       final hash = _generateHash(timestamp);
-      final Uri uri = offset == null
-          ? Uri.parse('$baseUrl/characters?ts=$timestamp&apikey=$publicKey&hash=$hash')
-          : Uri.parse(
-              '$baseUrl//characters?offset=$offset&ts=$timestamp&apikey=$publicKey&hash=$hash');
+
+      String url = '$baseUrl/characters?ts=$timestamp&apikey=$publicKey&hash=$hash';
+
+      if (param != null) {
+        url += param;
+      }
+      final Uri uri = Uri.parse(url);
+      final HttpClientRequest request = await httpClient.getUrl(uri);
+      final HttpClientResponse response = await request.close();
+
+      if (response.statusCode == 200) {
+        final String responseBody =
+            await response.transform(utf8.decoder).join();
+        return json.decode(responseBody);
+      } else {
+        throw Exception(
+            'Failed to load characters. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load characters');
+    } finally {
+      httpClient.close();
+    }
+  }
+
+  Future<Map<String, dynamic>> getCharactersByName(String name) async {
+    final HttpClient httpClient = HttpClient();
+
+    try {
+      final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+      final hash = _generateHash(timestamp);
+      final Uri uri = Uri.parse(
+          '$baseUrl//characters?nameStartsWith=$name&ts=$timestamp&apikey=$publicKey&hash=$hash');
       final HttpClientRequest request = await httpClient.getUrl(uri);
       final HttpClientResponse response = await request.close();
 
