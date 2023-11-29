@@ -184,6 +184,36 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+  Future<void> searchByName(TextEditingController textEditingController) async {
+    _focusNode.unfocus();
+    nameCharacter = textEditingController.text;
+    await getCharactersWithParam(
+        '&nameStartsWith=${textEditingController.text}');
+    setState(() {
+      totalCharacters = characters.data!.total.toString();
+      offset = 0;
+    });
+  }
+
+  Future<void> getCharactersWithParam(String param) async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+
+      var res = await marvelApiService.getCharacters(param);
+      if (res != null) {
+        characters = MarvelCharacter.fromJson(res);
+      } else {
+        debugPrint('La respuesta es nula');
+      }
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      throw Exception('Error al cargar los personajes: $e');
+    }
+  }
 }
 
 class MarvelCharacterCard extends StatelessWidget {
