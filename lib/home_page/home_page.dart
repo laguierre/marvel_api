@@ -178,46 +178,11 @@ class _HomePageState extends State<HomePage> {
                       );
                     },
                     itemCount: characters.data?.count ?? 0)
-                : Center(
-                    child: Image.asset(
-                      'lib/assets/images/icons/loading.gif',
-                    ),
-                  ),
+                : const Center(child: CircularProgressIndicator()),
           ),
         ],
       ),
     );
-  }
-
-  Future<void> searchByName(TextEditingController textEditingController) async {
-    _focusNode.unfocus();
-    nameCharacter = textEditingController.text;
-    await getCharactersWithParam(
-        '&nameStartsWith=${textEditingController.text}');
-    setState(() {
-      totalCharacters = characters.data!.total.toString();
-      offset = 0;
-    });
-  }
-
-  Future<void> getCharactersWithParam(String param) async {
-    try {
-      setState(() {
-        isLoading = true;
-      });
-
-      var res = await marvelApiService.getCharacters(param);
-      if (res != null) {
-        characters = MarvelCharacter.fromJson(res);
-      } else {
-        debugPrint('La respuesta es nula');
-      }
-      setState(() {
-        isLoading = false;
-      });
-    } catch (e) {
-      throw Exception('Error al cargar los personajes: $e');
-    }
   }
 }
 
@@ -234,7 +199,7 @@ class MarvelCharacterCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
       child: Row(
         children: [
           ClipOval(
@@ -272,7 +237,7 @@ class MarvelCharacterCard extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 15),
+          const SizedBox(width: 10),
           Expanded(
             child: Text(
               characterName,
