@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/marvel/marvel_character_model.dart';
+import 'package:untitled/marvel/marvel_list_characters_model.dart';
 import 'package:untitled/marvel/marvel_services.dart';
 
 import '../constants.dart';
@@ -129,7 +129,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onSubmitted: (name) async {
                       await searchByName(textEditingController);
-
                     },
                   ),
                 ),
@@ -172,10 +171,7 @@ class _HomePageState extends State<HomePage> {
                     physics: const BouncingScrollPhysics(),
                     itemBuilder: (context, index) {
                       return MarvelCharacterCard(
-                        characterName: characters.data!.results![index].name!,
-                        urlImage:
-                            '${characters.data!.results![index].thumbnail!.path}',
-                      );
+                          character: characters.data!.results![index]);
                     },
                     itemCount: characters.data?.count ?? 0)
                 : const Center(child: CircularProgressIndicator()),
@@ -184,6 +180,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
   Future<void> searchByName(TextEditingController textEditingController) async {
     _focusNode.unfocus();
     nameCharacter = textEditingController.text;
@@ -219,65 +216,69 @@ class _HomePageState extends State<HomePage> {
 class MarvelCharacterCard extends StatelessWidget {
   const MarvelCharacterCard({
     super.key,
-    required this.characterName,
-    required this.urlImage,
+    required this.character,
   });
 
-  final String characterName;
-  final String urlImage;
+  final Results character;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
-      child: Row(
-        children: [
-          ClipOval(
-            child: Container(
-              height: 65,
-              width: 65,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Colors.orangeAccent, // Color del borde
-                  width: 2.0, // Ancho del borde
+    return GestureDetector(
+      onTap: () {
+        MarvelApiService marvelApiService = MarvelApiService();
+        marvelApiService.getCharactersById(character.id.toString());
+        //Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTopPop, child: DetailScreen(), childCurrent: this));
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
+        child: Row(
+          children: [
+            ClipOval(
+              child: Container(
+                height: 65,
+                width: 65,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.orangeAccent, // Color del borde
+                    width: 2.0, // Ancho del borde
+                  ),
                 ),
-              ),
-              child: ClipOval(
-                child: Image.network(
-                  '$urlImage.jpg',
-                  height: 60,
-                  width: 60,
-                  fit: BoxFit.cover,
-                  errorBuilder: (BuildContext context, Object error,
-                      StackTrace? stackTrace) {
-                    // Este constructor de widgets se ejecutará en caso de error
-                    return Container(
-                      width: 50,
-                      height: 50,
-                      color: marvelRedColor,
-                      child: const Icon(
-                        Icons.error,
-                        size: 40,
-                        color: Colors.white,
-                      ),
-                    );
-                  },
+                child: ClipOval(
+                  child: Image.network(
+                    '${character.thumbnail!.path!}.jpg',
+                    height: 60,
+                    width: 60,
+                    fit: BoxFit.cover,
+                    errorBuilder: (BuildContext context, Object error,
+                        StackTrace? stackTrace) {
+                      return Container(
+                        width: 50,
+                        height: 50,
+                        color: marvelRedColor,
+                        child: const Icon(
+                          Icons.error,
+                          size: 40,
+                          color: Colors.white,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              characterName,
-              style: const TextStyle(
-                  fontSize: generalFontSize,
-                  overflow: TextOverflow.ellipsis,
-                  fontFamily: 'CaptainMarvel'),
-            ),
-          )
-        ],
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                character.name!,
+                style: const TextStyle(
+                    fontSize: generalFontSize,
+                    overflow: TextOverflow.ellipsis,
+                    fontFamily: 'CaptainMarvel'),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

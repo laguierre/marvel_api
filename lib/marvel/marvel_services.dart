@@ -63,14 +63,15 @@ class MarvelApiService {
     }
   }
 
-  Future<Map<String, dynamic>> getCharactersByName(String name) async {
+  Future<Map<String, dynamic>> getCharactersById(String id) async {
     final HttpClient httpClient = HttpClient();
 
     try {
       final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
       final hash = _generateHash(timestamp);
       final Uri uri = Uri.parse(
-          '$baseUrl//characters?nameStartsWith=$name&ts=$timestamp&apikey=$publicKey&hash=$hash');
+          '$baseUrl/characters/$id?ts=$timestamp&apikey=$publicKey&hash=$hash');
+      print(uri);
       final HttpClientRequest request = await httpClient.getUrl(uri);
       final HttpClientResponse response = await request.close();
 
