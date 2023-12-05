@@ -1,4 +1,4 @@
-class MarvelCharactersList {
+class MarvelCharacterModel {
   int? code;
   String? status;
   String? copyright;
@@ -7,7 +7,7 @@ class MarvelCharactersList {
   String? eTag;
   Data? data;
 
-  MarvelCharactersList(
+  MarvelCharacterModel(
       {this.code,
         this.status,
         this.copyright,
@@ -16,7 +16,7 @@ class MarvelCharactersList {
         this.eTag,
         this.data});
 
-  MarvelCharactersList.fromJson(Map<String, dynamic> json) {
+  MarvelCharacterModel.fromJson(Map<String, dynamic> json) {
     code = json['code'];
     status = json['status'];
     copyright = json['copyright'];
@@ -46,9 +46,9 @@ class Data {
   int? limit;
   int? total;
   int? count;
-  List<Results>? results;
+  List<ResultsCharacter>? resultsData;
 
-  Data({this.offset, this.limit, this.total, this.count, this.results});
+  Data({this.offset, this.limit, this.total, this.count, this.resultsData});
 
   Data.fromJson(Map<String, dynamic> json) {
     offset = json['offset'];
@@ -56,9 +56,9 @@ class Data {
     total = json['total'];
     count = json['count'];
     if (json['results'] != null) {
-      results = <Results>[];
+      resultsData = <ResultsCharacter>[];
       json['results'].forEach((v) {
-        results!.add(Results.fromJson(v));
+        resultsData!.add(ResultsCharacter.fromJson(v));
       });
     }
   }
@@ -69,14 +69,14 @@ class Data {
     data['limit'] = limit;
     data['total'] = total;
     data['count'] = count;
-    if (results != null) {
-      data['results'] = results!.map((v) => v.toJson()).toList();
+    if (resultsData != null) {
+      data['results'] = resultsData!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
-class Results {
+class ResultsCharacter {
   int? id;
   String? name;
   String? description;
@@ -89,7 +89,7 @@ class Results {
   Comics? events;
   List<Urls>? urls;
 
-  Results(
+  ResultsCharacter(
       {this.id,
         this.name,
         this.description,
@@ -102,7 +102,7 @@ class Results {
         this.events,
         this.urls});
 
-  Results.fromJson(Map<String, dynamic> json) {
+  ResultsCharacter.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     description = json['description'];
@@ -225,27 +225,20 @@ class Items {
     return data;
   }
 }
-///TODO Posible problema acá
-class StoryItems {
+
+class ItemsResourceURI {
   String? resourceURI;
   String? name;
   String? type;
 
-  StoryItems({this.resourceURI, this.name, this.type});
+  ItemsResourceURI({this.resourceURI, this.name, this.type});
 
-  StoryItems.fromJson(Map<String, dynamic> json) {
+  ItemsResourceURI.fromJson(Map<String, dynamic> json) {
     resourceURI = json['resourceURI'];
     name = json['name'];
     type = json['type'];
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['resourceURI'] = resourceURI;
-    data['name'] = name;
-    data['type'] = type;
-    return data;
-  }
 }
 
 class Urls {

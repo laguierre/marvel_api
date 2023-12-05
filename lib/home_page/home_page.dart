@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:untitled/character_page/character_page.dart';
+import 'package:untitled/marvel/marvel_character_model.dart';
 import 'package:untitled/marvel/marvel_list_characters_model.dart';
 import 'package:untitled/marvel/marvel_services.dart';
 
@@ -13,7 +16,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   MarvelApiService marvelApiService = MarvelApiService();
-  MarvelCharacter characters = MarvelCharacter();
+  MarvelCharactersList characters = MarvelCharactersList();
+  MarvelCharacterModel character = MarvelCharacterModel();
   int offset = 0;
   bool isLoading = false;
   String totalCharacters = '0';
@@ -27,13 +31,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> fetchMarvelCharacter(String? offset) async {
+    setState(() {
+      isLoading = true;
+    });
     var res = await marvelApiService.getCharacters(offset);
     if (res != null) {
-      characters = MarvelCharacter.fromJson(res);
+      characters = MarvelCharactersList.fromJson(res);
       totalCharacters = characters.data!.total.toString();
+      isLoading = false;
       setState(() {});
     } else {
-      print('La respuesta es nula');
+      debugPrint('La respuesta es nula');
     }
   }
 
@@ -104,8 +112,8 @@ class _HomePageState extends State<HomePage> {
           Positioned(
             left: generalHorizontalPadding,
             right: generalHorizontalPadding,
-            top: 50,
-            height: size.width * 0.15,
+            top: 15,
+            height: size.height * 0.15,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -200,7 +208,7 @@ class _HomePageState extends State<HomePage> {
 
       var res = await marvelApiService.getCharacters(param);
       if (res != null) {
-        characters = MarvelCharacter.fromJson(res);
+        characters = MarvelCharactersList.fromJson(res);
       } else {
         debugPrint('La respuesta es nula');
       }
@@ -224,10 +232,24 @@ class MarvelCharacterCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         MarvelApiService marvelApiService = MarvelApiService();
-        marvelApiService.getCharactersById(character.id.toString());
-        //Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTopPop, child: DetailScreen(), childCurrent: this));
+        var res =
+            await marvelApiService.getCharactersById(character.id.toString());
+
+        if (res != null) {
+          var character = MarvelCharacterModel.fromJson(res);
+          Navigator.push(
+              context,
+              PageTransition(
+                  type: PageTransitionType.bottomToTopPop,
+                  child: CharacterPage(
+                    characterInfo: character,
+                  ),
+                  childCurrent: this));
+        } else {
+          print('La respuesta es nula');
+        }
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
