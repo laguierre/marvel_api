@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:untitled/constants.dart';
 import 'package:untitled/marvel/marvel_character_model.dart';
 import 'package:untitled/marvel/marvel_services.dart';
 import 'package:untitled/widgets.dart';
-
+import '../comics_page/comics_page.dart';
 import '../marvel/marvel_comic_model.dart';
 
 class CharacterPage extends StatelessWidget {
@@ -28,7 +29,7 @@ class CharacterPage extends StatelessWidget {
               children: [
                 Image.network(
                   '${character!.thumbnail!.path}.jpg',
-                  fit: BoxFit.fitWidth,
+                  fit: BoxFit.cover,
                   errorBuilder: (BuildContext context, Object error,
                       StackTrace? stackTrace) {
                     return Container(
@@ -100,8 +101,15 @@ class CharacterPage extends StatelessWidget {
                             var res = await  marvelApiService.getComicsByCharacterId(
                                 character.id.toString());
                             if (res != null) {
-                              var characters = MarvelComics.fromJson(res);
-                              print(characters.data?.results![0].description);
+                              var comics = MarvelComics.fromJson(res);
+                              Navigator.push(
+                                  context,
+                                  PageTransition(
+                                      type: PageTransitionType.bottomToTopPop,
+                                      child: ComicsPage(
+                                        comics: comics.data!,
+                                      ),
+                                      childCurrent: this));
                             }
 
                           }),

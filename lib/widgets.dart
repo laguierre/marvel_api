@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:untitled/constants.dart';
 
 class RoundedButton extends StatelessWidget {
@@ -18,15 +19,15 @@ class RoundedButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(
-              20.0), // Ajusta el radio según sea necesario
+              20.0.sp), // Ajusta el radio según sea necesario
         ),
       ),
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Text(
           label,
-          style: const TextStyle(
-              fontSize: 18,
+          style: TextStyle(
+              fontSize: 11.sp,
               color: Colors.black,
               overflow: TextOverflow.ellipsis,
               fontFamily: 'CaptainMarvel'),
@@ -45,7 +46,7 @@ class CustomBackButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       shadowColor: Colors.grey,
-      elevation: 10.0,
+      elevation: 10.0.sp,
       shape: const CircleBorder(),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -53,10 +54,10 @@ class CustomBackButton extends StatelessWidget {
           Navigator.pop(context);
         },
         child: Container(
-          padding: const EdgeInsets.only(left: 8),
+          padding: EdgeInsets.only(left: 8.sp),
           alignment: Alignment.center,
-          width: 50.0,
-          height: 50.0,
+          width: 50.0.sp,
+          height: 50.0.sp,
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
             color: Colors.white, // Color de fondo del botón
