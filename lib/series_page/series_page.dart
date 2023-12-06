@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:untitled/marvel/marvel_series_model.dart';
 import 'package:untitled/widgets.dart';
 
 import '../constants.dart';
-import '../marvel/marvel_comic_model.dart';
 
-class ComicsPage extends StatelessWidget {
-  const ComicsPage({super.key, required this.comics});
+class SeriesPage extends StatelessWidget {
+  const SeriesPage({super.key, required this.series});
 
-  final Data comics;
+  final Data series;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class ComicsPage extends StatelessWidget {
               children: [
                 CustomBackButton(),
                 Spacer(),
-                Text('Comics',
+                Text('Series',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 30,
@@ -49,38 +49,40 @@ class ComicsPage extends StatelessWidget {
           ),
           Expanded(
             child: ListView.separated(
-              padding: const EdgeInsets.fromLTRB(10, 15, 15, 10),
-              itemCount: comics.results!.length,
+              padding: const EdgeInsets.fromLTRB(10, 20, 15, 0),
+              itemCount: series.results!.length,
               itemBuilder: (context, index) {
                 RegExp exp = RegExp(r'<[^>]*>');
                 String text = 'N/A';
                 String price = 'N/A';
-                if (comics.results![index].textObjects!.isNotEmpty) {
-                  text = comics.results![index].textObjects!.first.text!
-                      .replaceAll(exp, '');
+
+                if (series.results![index].description != null) {
+                  text = series.results![index].description!;
                 }
-                if (comics.results![index].prices!.first.price != null) {
-                  price = comics.results![index].prices!.first.price.toString();
+                if (series.results![index].startYear != null) {
+                  price = series.results![index].startYear.toString();
                 }
+
                 return Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      height: 150.sp,
-                      width: 90.sp,
+                      padding:  EdgeInsets.fromLTRB(5.sp, 0, 15.sp, 0),
+                      margin: EdgeInsets.fromLTRB(0, 0, 0, 10.sp),
+                      height: 100.sp,
+                      width: 100.sp,
                       child: Column(
                         children: [
                           Image.network(
-                              '${comics.results![index].thumbnail!.path}.jpg',
+                              '${series.results![index].thumbnail!.path}.jpg',
                               fit: BoxFit.contain),
                           SizedBox(height: 5.sp),
                           Expanded(
                               child: Text(
-                            '\$$price',
+                            '\Year: $price',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 14.sp),
-                          ))
+                          )),
                         ],
                       ),
                     ),
@@ -89,7 +91,7 @@ class ComicsPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          comics.results![index].title!,
+                          series.results![index].title!,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                           style: TextStyle(
@@ -98,8 +100,6 @@ class ComicsPage extends StatelessWidget {
                         SizedBox(height: 5.sp),
                         Text(
                           text,
-                          maxLines: 8,
-                          overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.justify,
                           style: TextStyle(fontSize: 10.sp),
                         )

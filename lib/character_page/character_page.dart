@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:untitled/constants.dart';
 import 'package:untitled/marvel/marvel_character_model.dart';
+import 'package:untitled/marvel/marvel_series_model.dart';
 import 'package:untitled/marvel/marvel_services.dart';
+import 'package:untitled/series_page/series_page.dart';
 import 'package:untitled/widgets.dart';
 import '../comics_page/comics_page.dart';
 import '../marvel/marvel_comic_model.dart';
@@ -16,6 +18,7 @@ class CharacterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     var character = characterInfo.data!.resultsData?[0];
+    MarvelApiService marvelApiService = MarvelApiService();
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
@@ -95,11 +98,9 @@ class CharacterPage extends StatelessWidget {
                       RoundedButton(
                           label: 'Comics',
                           onPressed: () async {
-                            MarvelApiService marvelApiService =
-                                MarvelApiService();
-
-                            var res = await  marvelApiService.getComicsByCharacterId(
-                                character.id.toString());
+                            var res =
+                                await marvelApiService.getComicsByCharacterId(
+                                    character.id.toString());
                             if (res != null) {
                               var comics = MarvelComics.fromJson(res);
                               Navigator.push(
@@ -111,9 +112,23 @@ class CharacterPage extends StatelessWidget {
                                       ),
                                       childCurrent: this));
                             }
-
                           }),
-                      RoundedButton(label: 'Series', onPressed: () {}),
+                      RoundedButton(label: 'Series', onPressed: () async {
+                        var res =
+                            await marvelApiService.getSeriesByCharacterId(
+                            character.id.toString());
+                        if (res != null) {
+                          var series = MarvelSeries.fromJson(res);
+                          Navigator.push(
+                              context,
+                              PageTransition(
+                                  type: PageTransitionType.bottomToTopPop,
+                                  child: SeriesPage(
+                                    series: series.data!,
+                                  ),
+                                  childCurrent: this));
+                        }
+                      }),
                       RoundedButton(label: 'Stories', onPressed: () {}),
                     ],
                   ),

@@ -56,8 +56,8 @@ class CustomBackButton extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.only(left: 8.sp),
           alignment: Alignment.center,
-          width: 50.0.sp,
-          height: 50.0.sp,
+          width: 40.0.sp,
+          height: 40.0.sp,
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
             color: Colors.white, // Color de fondo del botón

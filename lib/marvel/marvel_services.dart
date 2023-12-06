@@ -96,7 +96,31 @@ class MarvelApiService {
       final hash = _generateHash(timestamp);
       final Uri uri = Uri.parse(
           '$baseUrl/characters/$id/comics?ts=$timestamp&apikey=$publicKey&hash=$hash');
-      print(uri);
+      final HttpClientRequest request = await httpClient.getUrl(uri);
+      final HttpClientResponse response = await request.close();
+
+      if (response.statusCode == 200) {
+        final String responseBody =
+        await response.transform(utf8.decoder).join();
+        return json.decode(responseBody);
+      } else {
+        throw Exception(
+            'Failed to load comics. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error al cargar el comics del personaje: $e');
+    } finally {
+      httpClient.close();
+    }
+  }
+  Future<Map<String, dynamic>> getSeriesByCharacterId(String id) async {
+    final HttpClient httpClient = HttpClient();
+
+    try {
+      final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+      final hash = _generateHash(timestamp);
+      final Uri uri = Uri.parse(
+          '$baseUrl/characters/$id/series?ts=$timestamp&apikey=$publicKey&hash=$hash');
       final HttpClientRequest request = await httpClient.getUrl(uri);
       final HttpClientResponse response = await request.close();
 
