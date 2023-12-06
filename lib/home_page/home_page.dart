@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:untitled/character_page/character_page.dart';
 import 'package:untitled/marvel/marvel_character_model.dart';
 import 'package:untitled/marvel/marvel_list_characters_model.dart';
 import 'package:untitled/marvel/marvel_services.dart';
+import 'package:untitled/widgets.dart';
 
 import '../constants.dart';
 
@@ -23,6 +25,9 @@ class _HomePageState extends State<HomePage> {
   String totalCharacters = '0';
   final FocusNode _focusNode = FocusNode();
   String? nameCharacter;
+
+  final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
+  final DismissDirection _dismissDirection = DismissDirection.horizontal;
 
   @override
   void initState() {
@@ -138,18 +143,13 @@ class _HomePageState extends State<HomePage> {
                     onSubmitted: (name) async {
                       await searchByName(textEditingController);
                     },
+
                   ),
                 ),
-                GestureDetector(
-                  child: Image.asset(
-                    searchIcon,
-                    height: size.width * 0.13,
-                    fit: BoxFit.cover,
-                  ),
-                  onTap: () async {
-                    await searchByName(textEditingController);
-                  },
-                ),
+                 CustomBackButton(iconData: Icons.close, onTap: (){
+                   textEditingController.text = '';
+                   fetchMarvelCharacter(null);
+                 },)
               ],
             ),
           ),
@@ -242,7 +242,7 @@ class MarvelCharacterCard extends StatelessWidget {
           Navigator.push(
               context,
               PageTransition(
-                  type: PageTransitionType.bottomToTopPop,
+                  type: PageTransitionType.fade,
                   child: CharacterPage(
                     characterInfo: character,
                   ),
@@ -267,24 +267,27 @@ class MarvelCharacterCard extends StatelessWidget {
                   ),
                 ),
                 child: ClipOval(
-                  child: Image.network(
-                    '${character.thumbnail!.path!}.jpg',
-                    height: 60,
-                    width: 60,
-                    fit: BoxFit.cover,
-                    errorBuilder: (BuildContext context, Object error,
-                        StackTrace? stackTrace) {
-                      return Container(
-                        width: 50,
-                        height: 50,
-                        color: marvelRedColor,
-                        child: const Icon(
-                          Icons.error,
-                          size: 40,
-                          color: Colors.white,
-                        ),
-                      );
-                    },
+                  child: Hero(
+                    tag: character.id!,
+                    child: Image.network(
+                      '${character.thumbnail!.path!}.jpg',
+                      height: 60,
+                      width: 60,
+                      fit: BoxFit.cover,
+                      errorBuilder: (BuildContext context, Object error,
+                          StackTrace? stackTrace) {
+                        return Container(
+                          width: 50,
+                          height: 50,
+                          color: marvelRedColor,
+                          child: const Icon(
+                            Icons.error,
+                            size: 40,
+                            color: Colors.white,
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),

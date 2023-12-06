@@ -33,9 +33,11 @@ class SeriesPage extends StatelessWidget {
                 ),
               ],
             ),
-            child: const Row(
+            child:  Row(
               children: [
-                CustomBackButton(),
+                CustomBackButton(onTap: () {
+                  Navigator.pop(context);
+                }),
                 Spacer(),
                 Text('Series',
                     style: TextStyle(
@@ -52,7 +54,6 @@ class SeriesPage extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(10, 20, 15, 0),
               itemCount: series.results!.length,
               itemBuilder: (context, index) {
-                RegExp exp = RegExp(r'<[^>]*>');
                 String text = 'N/A';
                 String price = 'N/A';
 
@@ -67,22 +68,24 @@ class SeriesPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding:  EdgeInsets.fromLTRB(5.sp, 0, 15.sp, 0),
+                      padding: EdgeInsets.fromLTRB(5.sp, 0, 15.sp, 0),
                       margin: EdgeInsets.fromLTRB(0, 0, 0, 10.sp),
-                      height: 100.sp,
+                      height: 120.sp,
                       width: 100.sp,
                       child: Column(
                         children: [
                           Image.network(
                               '${series.results![index].thumbnail!.path}.jpg',
-                              fit: BoxFit.contain),
+                              height: 100.sp,
+                              fit: BoxFit.fitHeight),
                           SizedBox(height: 5.sp),
                           Expanded(
-                              child: Text(
-                            '\Year: $price',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 14.sp),
-                          )),
+                            child: Text(
+                              '\Year: $price',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 14.sp),
+                            ),
+                          ),
                         ],
                       ),
                     ),

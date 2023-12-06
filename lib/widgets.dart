@@ -40,7 +40,12 @@ class RoundedButton extends StatelessWidget {
 class CustomBackButton extends StatelessWidget {
   const CustomBackButton({
     super.key,
+    this.iconData = Icons.arrow_back_ios,
+    required this.onTap,
   });
+
+  final IconData iconData;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -50,11 +55,11 @@ class CustomBackButton extends StatelessWidget {
       shape: const CircleBorder(),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () {
-          Navigator.pop(context);
-        },
+        onTap: onTap,
         child: Container(
-          padding: EdgeInsets.only(left: 8.sp),
+          padding: iconData == Icons.arrow_back_ios
+              ? EdgeInsets.only(left: 8.sp)
+              : EdgeInsets.only(left: 0.sp),
           alignment: Alignment.center,
           width: 40.0.sp,
           height: 40.0.sp,
@@ -62,9 +67,9 @@ class CustomBackButton extends StatelessWidget {
             shape: BoxShape.circle,
             color: Colors.white, // Color de fondo del botón
           ),
-          child: const Center(
+          child: Center(
             child: Icon(
-              Icons.arrow_back_ios,
+              iconData,
               color: Colors.black, // Color del icono
             ),
           ),

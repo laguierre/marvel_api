@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:untitled/constants.dart';
 import 'package:untitled/marvel/marvel_character_model.dart';
@@ -30,40 +31,45 @@ class CharacterPage extends StatelessWidget {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                Image.network(
-                  '${character!.thumbnail!.path}.jpg',
-                  fit: BoxFit.cover,
-                  errorBuilder: (BuildContext context, Object error,
-                      StackTrace? stackTrace) {
-                    return Container(
-                      height: size.height * 0.5,
-                      color: marvelRedColor,
-                      child: const Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Error al cargar la imagen',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                overflow: TextOverflow.ellipsis,
-                                fontFamily: 'CaptainMarvel'),
-                          ),
-                          SizedBox(height: 15),
-                          Icon(
-                            Icons.error,
-                            size: 60,
-                            color: Colors.white,
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                Hero(
+                  tag: character!.id!,
+                  child: Image.network(
+                    '${character.thumbnail!.path}.jpg',
+                    fit: BoxFit.cover,
+                    errorBuilder: (BuildContext context, Object error,
+                        StackTrace? stackTrace) {
+                      return Container(
+                        height: size.height * 0.5,
+                        color: marvelRedColor,
+                        child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Error al cargar la imagen',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontFamily: 'CaptainMarvel'),
+                            ),
+                            SizedBox(height: 15),
+                            Icon(
+                              Icons.error,
+                              size: 60,
+                              color: Colors.white,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
-                const Positioned(
+                Positioned(
                   top: 30,
                   left: 20,
-                  child: CustomBackButton(),
+                  child: CustomBackButton(onTap: () {
+                    Navigator.pop(context);
+                  }),
                 )
               ],
             ),
@@ -113,23 +119,26 @@ class CharacterPage extends StatelessWidget {
                                       childCurrent: this));
                             }
                           }),
-                      RoundedButton(label: 'Series', onPressed: () async {
-                        var res =
-                            await marvelApiService.getSeriesByCharacterId(
-                            character.id.toString());
-                        if (res != null) {
-                          var series = MarvelSeries.fromJson(res);
-                          Navigator.push(
-                              context,
-                              PageTransition(
-                                  type: PageTransitionType.bottomToTopPop,
-                                  child: SeriesPage(
-                                    series: series.data!,
-                                  ),
-                                  childCurrent: this));
-                        }
-                      }),
-                      RoundedButton(label: 'Stories', onPressed: () {}),
+                      SizedBox(width: 15.sp),
+                      RoundedButton(
+                          label: 'Series',
+                          onPressed: () async {
+                            var res =
+                                await marvelApiService.getSeriesByCharacterId(
+                                    character.id.toString());
+                            if (res != null) {
+                              var series = MarvelSeries.fromJson(res);
+                              Navigator.push(
+                                  context,
+                                  PageTransition(
+                                      type: PageTransitionType.bottomToTopPop,
+                                      child: SeriesPage(
+                                        series: series.data!,
+                                      ),
+                                      childCurrent: this));
+                            }
+                          }),
+                      const Spacer(),
                     ],
                   ),
                 ],
