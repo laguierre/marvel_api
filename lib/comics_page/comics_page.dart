@@ -36,8 +36,8 @@ class ComicsPage extends StatelessWidget {
             child:  Row(
               children: [
                 CustomBackButton(onTap: () { Navigator.pop(context);  },),
-                Spacer(),
-                Text('Comics',
+                const Spacer(),
+                const Text('Comics',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 30,

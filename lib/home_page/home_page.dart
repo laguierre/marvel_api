@@ -71,16 +71,7 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.white,
               ),
               onTap: () async {
-                offset -= 20;
-                if (offset < 0) {
-                  offset = 0;
-                } else {
-                  String param = '&offset=$offset';
-                  if (nameCharacter != null) {
-                    param += '&nameStartsWith=$nameCharacter';
-                  }
-                  await getCharactersWithParam(param);
-                }
+                await moveLeft();
               },
             ),
             const Spacer(),
@@ -98,15 +89,7 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.white,
               ),
               onTap: () async {
-                if (offset + 20 < int.parse(totalCharacters)) {
-                  offset += 20;
-
-                  String param = '&offset=$offset';
-                  if (nameCharacter != null) {
-                    param += '&nameStartsWith=$nameCharacter';
-                  }
-                  await getCharactersWithParam(param);
-                }
+                await moveRight();
               },
             )
           ],
@@ -143,13 +126,15 @@ class _HomePageState extends State<HomePage> {
                     onSubmitted: (name) async {
                       await searchByName(textEditingController);
                     },
-
                   ),
                 ),
-                 CustomBackButton(iconData: Icons.close, onTap: (){
-                   textEditingController.text = '';
-                   fetchMarvelCharacter(null);
-                 },)
+                CustomBackButton(
+                  iconData: Icons.close,
+                  onTap: () {
+                    textEditingController.text = '';
+                    fetchMarvelCharacter(null);
+                  },
+                )
               ],
             ),
           ),
@@ -173,20 +158,57 @@ class _HomePageState extends State<HomePage> {
             margin: EdgeInsets.fromLTRB(generalHorizontalPadding,
                 size.height * 0.15, generalHorizontalPadding, 10),
             child: !isLoading
-                ? ListView.builder(
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
-                    physics: const BouncingScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return MarvelCharacterCard(
-                          character: characters.data!.results![index]);
+                ? GestureDetector(
+                    onHorizontalDragEnd: (details) async {
+                      if (details.primaryVelocity! > 0) {
+                        await moveLeft();
+                      } else {
+                        await moveRight(); // Deslizamiento hacia la izquierda
+                      }
                     },
-                    itemCount: characters.data?.count ?? 0)
+                    child: ListView.builder(
+                        key: listKey,
+                        keyboardDismissBehavior:
+                            ScrollViewKeyboardDismissBehavior.onDrag,
+                        physics: const BouncingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return MarvelCharacterCard(
+                              character: characters.data!.results![index]);
+                        },
+                        itemCount: characters.data?.count ?? 0),
+                  )
                 : const Center(child: CircularProgressIndicator()),
           ),
         ],
       ),
     );
+  }
+
+  Future<void> moveRight() async {
+    if (offset + 20 < int.parse(totalCharacters)) {
+      offset += 20;
+
+      String param = '&offset=$offset';
+      if (nameCharacter != null) {
+        param += '&nameStartsWith=$nameCharacter';
+      }
+      await getCharactersWithParam(param);
+      setState(() {});
+    }
+  }
+
+  Future<void> moveLeft() async {
+    offset -= 20;
+    if (offset < 0) {
+      offset = 0;
+    } else {
+      String param = '&offset=$offset';
+      if (nameCharacter != null) {
+        param += '&nameStartsWith=$nameCharacter';
+      }
+      await getCharactersWithParam(param);
+    }
+    setState(() {});
   }
 
   Future<void> searchByName(TextEditingController textEditingController) async {
@@ -247,8 +269,6 @@ class MarvelCharacterCard extends StatelessWidget {
                     characterInfo: character,
                   ),
                   childCurrent: this));
-        } else {
-          print('La respuesta es nula');
         }
       },
       child: Padding(

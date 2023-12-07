@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:untitled/constants.dart';
 
 class RoundedButton extends StatelessWidget {
   final String label;

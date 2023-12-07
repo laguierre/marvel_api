@@ -14,9 +14,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return ScreenUtilInit(
-
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Marvel Heroes App',

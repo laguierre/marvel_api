@@ -83,7 +83,7 @@ class Results {
   String? resourceURI;
   String? type;
   String? modified;
-  Null? thumbnail;
+  Null thumbnail;
   Creators? creators;
   Creators? characters;
   Creators? series;

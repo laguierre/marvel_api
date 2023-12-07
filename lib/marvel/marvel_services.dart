@@ -10,28 +10,6 @@ class MarvelApiService {
     return digest.toString();
   }
 
-  // Future<Map<String, dynamic>> getCharacters() async {
-  //   final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-  //   final hash = _generateHash(timestamp);
-  //   final response = await http.get(
-  //     Uri.parse('$baseUrl/characters'),
-  //     headers: {
-  //       'ts': timestamp,
-  //       'apikey': publicKey,
-  //       'hash': hash,
-  //     },
-  //   );
-  //
-  //   print('URL: ${Uri.parse('$baseUrl/characters?ts=$timestamp&apikey=$publicKey&hash=$hash')}');
-  //
-  //   if (response.statusCode == 200) {
-  //     print(response.body);
-  //     final Map<String, dynamic> data = json.decode(response.body);
-  //     return data;
-  //   } else {
-  //     throw Exception('Failed to load characters');
-  //   }
-  // }
   Future<Map<String, dynamic>> getCharacters(String? param) async {
     final HttpClient httpClient = HttpClient();
 

@@ -1,16 +1,38 @@
-# marvel_api
+# Marvel API REST - Flutter Demo
 
-A new Flutter project.
+Marvel API REST App made with Flutter. Use https://developer.marvel.com/ to made Marvel API request.
+
+- HttpClientRequest.
+- md5.convert
+
+##Graphical resource
+- FlatIcon [link](https://www.flaticon.com/)
+- PNGWing [link](https://www.pngwing.com/)
+
+##Useful info: Change launch icon
+- AppIcon [link](https://appicon.co/)
+- Tutorial for change the Launch Icon [link](https://www.geeksforgeeks.org/flutter-changing-app-icon/)
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+**Packages used:**
+- page_transition
+- flutter_screenutil
+- flutter_svg
+- crypto
 
-A few resources to get you started if this is your first Flutter project:
+## GIF
+<p align="center">
+<img src="screenshots/Animation.gif" height="700">
+</p>
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Screenshots
+<p align="center">
+<img src="screenshots\Screenshot_20231206_214312.png" height="700">
+<img src="screenshots\Screenshot_20231206_214354.png" height="700">
+<img src="screenshots\Screenshot_20231206_214415.png" height="700">
+<img src="screenshots\Screenshot_20231206_214432.png" height="700">
+<img src="screenshots\Screenshot_20231206_214446.png" height="700">
+</p>
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+

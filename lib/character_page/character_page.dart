@@ -112,7 +112,7 @@ class CharacterPage extends StatelessWidget {
                               Navigator.push(
                                   context,
                                   PageTransition(
-                                      type: PageTransitionType.bottomToTopPop,
+                                      type: PageTransitionType.fade,
                                       child: ComicsPage(
                                         comics: comics.data!,
                                       ),
@@ -131,7 +131,7 @@ class CharacterPage extends StatelessWidget {
                               Navigator.push(
                                   context,
                                   PageTransition(
-                                      type: PageTransitionType.bottomToTopPop,
+                                      type: PageTransitionType.fade,
                                       child: SeriesPage(
                                         series: series.data!,
                                       ),

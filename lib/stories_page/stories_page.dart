@@ -40,8 +40,8 @@ class StoriesPage extends StatelessWidget {
                     Navigator.pop(context);
                   },
                 ),
-                Spacer(),
-                Text('Series',
+                const Spacer(),
+                const Text('Series',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 30,
@@ -82,7 +82,7 @@ class StoriesPage extends StatelessWidget {
                           SizedBox(height: 5.sp),
                           Expanded(
                               child: Text(
-                            '\Year: $price',
+                            'Year: $price',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 14.sp),
                           )),
