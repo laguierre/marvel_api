@@ -48,7 +48,7 @@ class ComicsPage extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView.separated(
+            child: comics.results!.isNotEmpty? ListView.separated(
               padding: const EdgeInsets.fromLTRB(10, 15, 15, 10),
               itemCount: comics.results!.length,
               itemBuilder: (context, index) {
@@ -115,7 +115,7 @@ class ComicsPage extends StatelessWidget {
                   color: Colors.grey,
                 );
               },
-            ),
+            ) : const NoData(),
           )
         ],
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:untitled/constants.dart';
 
 class RoundedButton extends StatelessWidget {
   final String label;
@@ -77,3 +78,35 @@ class CustomBackButton extends StatelessWidget {
     );
   }
 }
+class NoData extends StatelessWidget {
+  const NoData({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        children: [
+          SizedBox(height: 50.sp),
+          SizedBox(
+              height: 50.sp,
+              child: Image.asset(
+                noDataIcon,
+                color: marvelRedColor,
+              )),
+          SizedBox(height: 10.sp),
+          Text('No data',
+              style: TextStyle(
+                  color: marvelRedColor,
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                  overflow: TextOverflow.ellipsis,
+                  fontFamily: 'CaptainMarvel')),
+        ],
+      ),
+    );
+  }
+}
+
+

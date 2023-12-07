@@ -50,7 +50,7 @@ class SeriesPage extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView.separated(
+            child: series.results!.isNotEmpty? ListView.separated(
               padding: const EdgeInsets.fromLTRB(10, 20, 15, 0),
               itemCount: series.results!.length,
               itemBuilder: (context, index) {
@@ -118,7 +118,7 @@ class SeriesPage extends StatelessWidget {
                   color: Colors.grey,
                 );
               },
-            ),
+            ) : const NoData(),
           )
         ],
       ),
