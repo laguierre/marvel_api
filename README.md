@@ -24,6 +24,7 @@ Marvel API REST App made with Flutter. Use https://developer.marvel.com/ to made
 ## GIF
 <p align="center">
 <img src="screenshots/Animation.gif" height="700">
+<img src="screenshots\Screenshot_20231206_214446.png" height="700">
 </p>
 
 ## Screenshots
@@ -32,7 +33,6 @@ Marvel API REST App made with Flutter. Use https://developer.marvel.com/ to made
 <img src="screenshots\Screenshot_20231206_214354.png" height="700">
 <img src="screenshots\Screenshot_20231206_214415.png" height="700">
 <img src="screenshots\Screenshot_20231206_214432.png" height="700">
-<img src="screenshots\Screenshot_20231206_214446.png" height="700">
 </p>
 
 
